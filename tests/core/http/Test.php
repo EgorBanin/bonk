@@ -2,6 +2,21 @@
 
 namespace http;
 
+/**
+ * Хак: переопределяем стандартные функции
+ */
+$sended_headers = [];
+
+function headers_sent() {
+	return false;
+}
+
+function header($header) {
+	global $sended_headers;
+	
+	$sended_headers[] = $header;
+}
+
 require_once 'core/http/module.php';
 
 class Test extends \PHPUnit_Framework_TestCase {
@@ -25,4 +40,17 @@ class Test extends \PHPUnit_Framework_TestCase {
 		);
 	}
 	
+	public function test_send_response() {
+		$response = new response(['HelloHeader: hello'], 'hello world');
+		$output_stream = fopen('php://temp', 'r+');
+		send_response($response, $output_stream);
+		rewind($output_stream);
+		$body = stream_get_contents($output_stream);
+		fclose($output_stream);
+		$this->assertEquals($response->body, $body);
+		global $sended_headers;
+		foreach ($response->headers as $header) {
+			$this->assertContains($header, $sended_headers);
+		}
+	}
 }

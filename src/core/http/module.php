@@ -3,6 +3,7 @@
 namespace http;
 
 require_once 'request.php';
+require_once 'response.php';
 
 /**
  * Получить HTTP-запрос из окружения
@@ -16,4 +17,19 @@ function request_from_env(array $server_env, $input_stream) {
 	$body = @stream_get_contents($input_stream)?: '';
 	
 	return new request($method, $uri, $body);
+}
+
+/**
+ * Отправка HTTP-ответа
+ * @param response $response
+ * @return void
+ */
+function send_response(response $response, $output_stream) {
+	if ( ! headers_sent()) {
+		foreach ($response->headers as $header) {
+			header($header);
+		}
+	}
+	
+	fwrite($output_stream, $response->body);
 }
