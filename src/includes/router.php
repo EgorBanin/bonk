@@ -88,3 +88,7 @@ function get_regex($pattern, $is_prefix = false) {
 	
 	return '~^'.$regex.($is_prefix? '~' : '\/?$~');
 }
+
+function url($action, $params = []) {
+	return '#';
+}

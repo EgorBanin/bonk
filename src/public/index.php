@@ -6,8 +6,14 @@ $app_path = realpath(__DIR__.'/..');
 $include_path = get_include_path();
 set_include_path($include_path.PATH_SEPARATOR.$app_path);
 
+$config = require 'config.php';
+
 // настраиваем сессии
-session_save_path($app_path.'/sessions');
+session_save_path($config['sessions_dir']);
+
+// настраиваем бд
+$mongo = new \MongoClient($config['mongo']['server']);
+$GLOBALS['db'] = $mongo->{$config['mongo']['db']};
 
 require_once 'includes/core.php';
 require_once 'includes/router.php';
@@ -20,7 +26,7 @@ $action = \router\route($uri_path, [
 	'/{dir}/{file}' => '{dir}/{file}.php',
 ]);
 
-if ( ! $action || ! is_file('actions/'.$action)) {
+if ( ! $action || ! stream_resolve_include_path('actions/'.$action)) {
 	$action = 'errors/not_found.php';
 }
 
