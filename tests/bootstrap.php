@@ -1,6 +1,9 @@
 <?php
 
-$app_path = __DIR__.'/../src';
-set_include_path(get_include_path().PATH_SEPARATOR.$app_path);
+$appPath = realpath('../src/app');
 
-require_once 'core/module.php';
+// настраиваем include_path
+$include_path = get_include_path();
+set_include_path($include_path.PATH_SEPARATOR.$appPath);
+
+require 'autoload.php';
