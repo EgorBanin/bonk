@@ -11,7 +11,7 @@ require 'autoload.php';
 $app = new \App\Web([
 	'/' => 'index.php',
 	'/$module' => '$module/index.php',
-	'/$module/$id' => '$module/get.php',
+	'/$module/$action' => '$module/$action.php',
 	'/$module/$id/$action' => '$module/$action.php',
 ]);
 

@@ -4,14 +4,14 @@ namespace Http;
 
 class Response {
     
-    public $status;
+    public $code;
     
     public $headers;
 	
     public $body;
     
-    public function __construct($status, array $headers, $body) {
-        $this->status = $status;
+    public function __construct($code, array $headers, $body) {
+        $this->code = $code;
         $this->headers = $headers;
         $this->body = $body;
     }
@@ -23,7 +23,7 @@ class Response {
 			
 			return false;
 		} else {
-			http_response_code($this->status);
+			http_response_code($this->code);
 			
 			foreach ($this->headers as $header) {
                 header($header, true);
@@ -33,6 +33,10 @@ class Response {
 			
 			return true;
 		}
+	}
+	
+	public static function redirect($uri, $code = 302) {
+		return new self($code, ['Location: '.$uri]);
 	}
     
 }
