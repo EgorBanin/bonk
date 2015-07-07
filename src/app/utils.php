@@ -2,6 +2,14 @@
 
 namespace utils;
 
+function obInclude($file, array $params = []) {
+	extract($params);
+	ob_start();
+	require func_get_arg(0);
+
+	return ob_get_clean();	
+}
+
 /**
  * Разбор строки по шаблону
  * 

@@ -4,13 +4,9 @@ namespace App;
 
 abstract class FrontController {
 	
-	protected $actionDir = 'actions';
+	protected $actionDir;
 	
 	abstract public function run($requests = null);
-
-	protected function action($action) {
-		$file = __DIR__.'/'.$this->actionDir.'/'.$action;
-	}
 	
 }
 

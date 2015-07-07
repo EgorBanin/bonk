@@ -2,6 +2,8 @@
 
 return function() {
 	
-	return new Http\Response(200, [], 'Hello world');
+	return $this->tpl('layout.php', [
+		'content' => $this->tpl('index.php')
+	]);
 	
 };
