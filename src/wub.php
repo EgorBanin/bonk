@@ -6,7 +6,7 @@ namespace wub;
  * Подключение файла с буферизацией вывода
  * @param string $file
  * @param array $params
- * @return sting
+ * @return string
  */
 function ob_include($file, array $params = []) {
 	extract($params);

@@ -4,11 +4,15 @@ $options = getopt('n::');
 
 $ns = isset($options['n'])? $options['n'] : 'wub';
 
-$out = "<?php\n\nnamespace $ns;\n";
+if ($ns) {
+    $out = "<?php\n\nnamespace $ns;\n";
+} else {
+    $out = "<?php\n\n";
+}
 
 $files = [
 	__DIR__.'/src/arr.php',
-	__DIR__.'/src/http.php',
+	__DIR__.'/src/io.php',
 	__DIR__.'/src/str.php',
 	__DIR__.'/src/wub.php',
 ];
