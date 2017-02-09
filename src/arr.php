@@ -21,7 +21,7 @@ function arr_get($array, $key, $defaultValue = null) {
  * @return mixed
  */
 function arr_take(&$array, $key, $defaultValue = null) {
-	$val = get($array, $key, $defaultValue);
+	$val = arr_get($array, $key, $defaultValue);
 	unset($array[$key]);
 	
 	return $val;
