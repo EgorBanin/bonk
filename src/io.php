@@ -76,7 +76,7 @@ function io_get_request_headers() {
  * @param string $body
  * @return boolean
  */
-function io_send_request($code, $headers, $body) {
+function io_send_response($code, $headers, $body) {
 	if (\headers_sent()) {
 		\trigger_error('Headers already sent', \E_USER_WARNING);
 		echo $body;
@@ -107,7 +107,7 @@ function io_send_request($code, $headers, $body) {
  * @param int $code
  */
 function io_redirect($url, $code = 302) {
-	io_send_request($code, ['Location: '.$url], '');
+	io_send_response($code, ['Location: '.$url], '');
 	exit(0);
 }
 
