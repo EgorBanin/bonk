@@ -1,8 +1,9 @@
 <?php
 
-$options = getopt('n::');
+$options = getopt('n::s');
 
 $ns = isset($options['n'])? $options['n'] : 'wub';
+$s = isset($options['s'])? true : false;
 
 if ($ns) {
     $out = "<?php\n\nnamespace $ns;\n";
@@ -20,6 +21,10 @@ foreach ($files as $file) {
 	$content = file_get_contents($file);
 	$content = str_replace("<?php\n\nnamespace wub;", '', $content);
 	$out .= $content;
+}
+
+if ($s) {
+	$out = str_replace('	', '    ', $out);
 }
 
 echo $out;
