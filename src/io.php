@@ -110,3 +110,23 @@ function io_redirect($url, $code = 302) {
 	io_send_request($code, ['Location: '.$url], '');
 	exit(0);
 }
+
+/**
+ * Получить переменную из $_GET массива
+ * @param string $key
+ * @param mixed $defaultValue
+ * @return mixed
+ */
+function io_get($key, $defaultValue = null) {
+	return array_key_exists($key, $_GET)? $_GET[$key] : $defaultValue;
+}
+
+/**
+ * Получить переменную из $_POST массива
+ * @param string $key
+ * @param mixed $defaultValue
+ * @return mixed
+ */
+function io_post($key, $defaultValue = null) {
+	return array_key_exists($key, $_POST)? $_POST[$key] : $defaultValue;
+}
