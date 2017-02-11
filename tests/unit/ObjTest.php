@@ -10,8 +10,8 @@ class Foo {
 	
 	public $baz;
 	
-	function __construct($options) {
-		\wub\obj_init($this, $options);
+	function __construct($foo, $bar, $baz) {
+		\wub\obj_init($this, get_defined_vars());
 	}
 	
 	public function getProperies() {
@@ -41,7 +41,7 @@ class ObjTest extends PHPUnit_Framework_TestCase {
 			'bar' => 'hi',
 			'baz' => 'bye',
 		];
-		$foo = new Foo($options);
+		$foo = new Foo($options['foo'], $options['bar'], $options['baz']);
 		$this->assertSame($options, $foo->getProperies(), 'Свойства установились верно');
 		
 		$bar = new Bar('hi');

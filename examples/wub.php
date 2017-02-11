@@ -1,6 +1,5 @@
 <?php
 
-namespace examples;
 
 
 /**
@@ -22,7 +21,7 @@ function arr_get($array, $key, $defaultValue = null) {
  * @return mixed
  */
 function arr_take(&$array, $key, $defaultValue = null) {
-	$val = get($array, $key, $defaultValue);
+	$val = arr_get($array, $key, $defaultValue);
 	unset($array[$key]);
 	
 	return $val;
@@ -134,7 +133,7 @@ function io_get_request_headers() {
  * @param string $body
  * @return boolean
  */
-function io_send_request($code, $headers, $body) {
+function io_send_response($code, $headers, $body) {
 	if (\headers_sent()) {
 		\trigger_error('Headers already sent', \E_USER_WARNING);
 		echo $body;
@@ -165,10 +164,29 @@ function io_send_request($code, $headers, $body) {
  * @param int $code
  */
 function io_redirect($url, $code = 302) {
-	io_send_request($code, ['Location: '.$url], '');
+	io_send_response($code, ['Location: '.$url], '');
 	exit(0);
 }
 
+/**
+ * Получить переменную из $_GET массива
+ * @param string $key
+ * @param mixed $defaultValue
+ * @return mixed
+ */
+function io_get($key, $defaultValue = null) {
+	return array_key_exists($key, $_GET)? $_GET[$key] : $defaultValue;
+}
+
+/**
+ * Получить переменную из $_POST массива
+ * @param string $key
+ * @param mixed $defaultValue
+ * @return mixed
+ */
+function io_post($key, $defaultValue = null) {
+	return array_key_exists($key, $_POST)? $_POST[$key] : $defaultValue;
+}
 
 /**
  * Заменить вхождения строки '{varName}' на соответствующее значение из массива
@@ -197,4 +215,14 @@ function ob_include($file, array $params = []) {
 	require func_get_arg(0);
 
 	return ob_get_clean();	
+}
+
+function debug() {
+	$backtrace = debug_backtrace(
+		DEBUG_BACKTRACE_IGNORE_ARGS & ~DEBUG_BACKTRACE_PROVIDE_OBJECT,
+		1
+	);
+	echo $backtrace[0]['file'].':'.$backtrace[0]['line']."\n";
+	$vars = func_get_args();
+	call_user_func_array('var_dump', $vars);
 }
