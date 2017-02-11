@@ -52,5 +52,3 @@ $bad = $router->route('/bad');
 debug($bad); // false
 $my = $router->route('/my');
 call_user_func($my[0], $my[1]);
-
-

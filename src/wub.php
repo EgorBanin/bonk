@@ -18,6 +18,7 @@ function ob_include($file, array $params = []) {
 
 /**
  * var-dump с выводом файла и строки, в котором он вызван
+ * @param mixed ...$var
  */
 function debug() {
 	$backtrace = debug_backtrace(

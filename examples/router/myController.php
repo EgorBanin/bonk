@@ -1,6 +1,6 @@
 <?php
 
 return function($params) {
-	var_dump($params);
+	debug($params);
 	echo "hello world\n";
 };

@@ -28,7 +28,7 @@ function arr_take(&$array, $key, $defaultValue = null) {
 }
 
 /**
- * Пользовательский поис по массиву
+ * Пользовательский поиск по массиву
  * @param array $array
  * @param callback $func
  * @return mixed ключ найденого значения или false, если значение не найдено
