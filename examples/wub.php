@@ -28,7 +28,7 @@ function arr_take(&$array, $key, $defaultValue = null) {
 }
 
 /**
- * Пользовательский поис по массиву
+ * Пользовательский поиск по массиву
  * @param array $array
  * @param callback $func
  * @return mixed ключ найденого значения или false, если значение не найдено
@@ -204,6 +204,32 @@ function str_template($template, $vars) {
 }
 
 /**
+ * Включение очень простой автозагрузки классов
+ * Если переданы базовые директории, они будут добавлены в include path
+ * @param string ...$baseDir
+ */
+function enable_class_autoloading() {
+	$baseDirs = func_get_args();
+	if ($baseDirs) {
+		$include = '';
+		foreach ($baseDirs as $baseDir) {
+			$include .= PATH_SEPARATOR.$baseDir;
+		}
+		set_include_path(get_include_path().$include);
+	}
+
+	spl_autoload_register(function($className) {
+		$fileName = stream_resolve_include_path(
+			strtr(ltrim($className, '\\'), '\\', '/').'.php'
+		);
+
+		if ($fileName) {
+			require_once $fileName;
+		}
+	});
+}
+
+/**
  * Подключение файла с буферизацией вывода
  * @param string $file
  * @param array $params
@@ -217,7 +243,13 @@ function ob_include($file, array $params = []) {
 	return ob_get_clean();	
 }
 
-function debug() {
+/**
+ * var_dump с выводом файла и строки, в котором он вызван
+ * Функция помечена как deprecated для дополнительной подсветки IDE
+ * @param mixed ...$var
+ * @deprecated
+ */
+function DEBUG() {
 	$backtrace = debug_backtrace(
 		DEBUG_BACKTRACE_IGNORE_ARGS & ~DEBUG_BACKTRACE_PROVIDE_OBJECT,
 		1

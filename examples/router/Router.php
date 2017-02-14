@@ -49,6 +49,6 @@ $router = new Router([
 ]);
 
 $bad = $router->route('/bad');
-debug($bad); // false
+DEBUG($bad); // false
 $my = $router->route('/my');
 call_user_func($my[0], $my[1]);
