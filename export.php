@@ -16,6 +16,7 @@ $files = [
 	__DIR__.'/src/io.php',
 	__DIR__.'/src/str.php',
 	__DIR__.'/src/wub.php',
+	__DIR__.'/src/http.php',
 ];
 foreach ($files as $file) {
 	$content = file_get_contents($file);

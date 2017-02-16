@@ -15,7 +15,7 @@ class Router {
 		$this->routes = $routes;
 	}
 	
-	public function route($url) {
+	public function route($url, $actionDir) {
 		$params = [];
 		$pattern = arr_usearch($this->routes, function($pattern) use($url, &$params) {
 			$matches = [];
@@ -31,7 +31,7 @@ class Router {
 		});
 		
 		if ($pattern !== false) {
-			$actionFile = str_template($this->routes[$pattern], $params);
+			$actionFile = $actionDir.'/'.str_template($this->routes[$pattern], $params);
 			
 			if (is_readable($actionFile)) {
 				$action = require $actionFile;
@@ -48,7 +48,7 @@ $router = new Router([
 	'~^/(?<controllerName>[^/]+)$~' => __DIR__.'/{controllerName}Controller.php',
 ]);
 
-$bad = $router->route('/bad');
+$bad = $router->route('/bad', __DIR__);
 DEBUG($bad); // false
 $my = $router->route('/my');
 call_user_func($my[0], $my[1]);
