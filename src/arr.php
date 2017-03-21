@@ -58,3 +58,23 @@ function arr_update(&$array, $update) {
 		}
 	}, $update);
 }
+
+/**
+ * Получить массив только с указанными ключами
+ * @param array $array
+ * @param array $keys
+ * @return array
+ */
+function arr_pick($array, $keys) {
+	return array_intersect_key($array, array_flip($keys));
+}
+
+/**
+ * Получить массив без указанных ключей
+ * @param array $array
+ * @param array $keys
+ * @return array
+ */
+function arr_omit($array, $keys) {
+	return array_diff_key($array, array_flip($keys));
+}

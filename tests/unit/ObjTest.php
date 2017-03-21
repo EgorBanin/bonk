@@ -49,5 +49,15 @@ class ObjTest extends PHPUnit_Framework_TestCase {
 		\wub\obj_init($bar, ['bar' => 'hack!']);
 		$this->assertSame('hack!', $bar->getBar(), 'Приватное свойство изменилось');
 	}
+
+	public function testToArray() {
+		$foo = new Foo('foo', 'bar', 'baz');
+		$this->assertSame([
+			'foo' => 'foo',
+			'bar' => 'bar',
+			'baz' => 'baz',
+		], \wub\obj_to_array($foo));
+		$this->assertSame(['baz' => 'baz'], \wub\obj_to_array($foo, false));
+	}
 	
 }

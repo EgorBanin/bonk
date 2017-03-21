@@ -19,3 +19,24 @@ function obj_init($obj, $properties) {
 	$closure($properties);
 }
 
+/**
+ * Преобразовать объект в массив
+ * @param type $obj
+ * @param type $inject
+ * @return type
+ */
+function obj_to_array($obj, $inject = true) {
+	$arr = [];
+	if ($inject) {
+		$func = function(&$properties) {
+			$properties = get_object_vars($this);
+		};
+		$closure = $func->bindTo($obj, $obj);
+		$closure($arr);
+	} else {
+		$arr = get_object_vars($obj);
+	}
+
+	return $arr;
+}
+
