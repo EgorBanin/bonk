@@ -57,7 +57,6 @@ class ObjTest extends PHPUnit_Framework_TestCase {
 			'bar' => 'bar',
 			'baz' => 'baz',
 		], \wub\obj_to_array($foo));
-		$this->assertSame(['baz' => 'baz'], \wub\obj_to_array($foo, false));
 	}
 	
 }

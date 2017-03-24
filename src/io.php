@@ -130,3 +130,13 @@ function io_get($key, $defaultValue = null) {
 function io_post($key, $defaultValue = null) {
 	return array_key_exists($key, $_POST)? $_POST[$key] : $defaultValue;
 }
+
+/**
+ * Получить переменную из $_SESSION массива
+ * @param string $key
+ * @param mixed $defaultValue
+ * @return mixed
+ */
+function io_session($key, $defaultValue = null) {
+	return array_key_exists($key, $_SESSION)? $_SESSION[$key] : $defaultValue;
+}

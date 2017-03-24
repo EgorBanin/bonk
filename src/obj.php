@@ -21,21 +21,18 @@ function obj_init($obj, $properties) {
 
 /**
  * Преобразовать объект в массив
+ * Работает аналогично get_object_vars,
+ * но получает доступ к защищённым и приватным свойствам.
  * @param type $obj
- * @param type $inject
  * @return type
  */
-function obj_to_array($obj, $inject = true) {
+function obj_to_array($obj) {
 	$arr = [];
-	if ($inject) {
-		$func = function(&$properties) {
-			$properties = get_object_vars($this);
-		};
-		$closure = $func->bindTo($obj, $obj);
-		$closure($arr);
-	} else {
-		$arr = get_object_vars($obj);
-	}
+	$func = function(&$properties) {
+		$properties = get_object_vars($this);
+	};
+	$closure = $func->bindTo($obj, $obj);
+	$closure($arr);
 
 	return $arr;
 }
