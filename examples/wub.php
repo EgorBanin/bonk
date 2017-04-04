@@ -60,6 +60,43 @@ function arr_update(&$array, $update) {
 }
 
 /**
+ * Получить массив только с указанными ключами
+ * @param array $array
+ * @param array $keys
+ * @return array
+ */
+function arr_pick($array, $keys) {
+	return array_intersect_key($array, array_flip($keys));
+}
+
+/**
+ * Получить массив без указанных ключей
+ * @param array $array
+ * @param array $keys
+ * @return array
+ */
+function arr_omit($array, $keys) {
+	return array_diff_key($array, array_flip($keys));
+}
+
+/**
+ * Проиндексировать список массивов по ключу
+ * @param array $array массив ассосиативных массивов
+ * @param string $key
+ * @return array
+ */
+function arr_index($array, $key) {
+	$index = [];
+	foreach ($array as $v) {
+		if (array_key_exists($key, $v)) {
+			$index[$v[$key]] = $v;
+		}
+	}
+	
+	return $index;
+}
+
+/**
  * Получить текущий запрос
  * Заголовки получаются с помощью io_get_request_headers.
  * Имена заголовков приводятся к виду Имя-Заголовка. Будте внимательны,
@@ -189,6 +226,43 @@ function io_post($key, $defaultValue = null) {
 }
 
 /**
+ * Получить переменную из $_SESSION массива
+ * @param string $key
+ * @param mixed $defaultValue
+ * @return mixed
+ */
+function io_session($key, $defaultValue = null) {
+	return array_key_exists($key, $_SESSION)? $_SESSION[$key] : $defaultValue;
+}
+
+/**
+ * Получить опции командной строки
+ * @global array $argv
+ * @return array
+ */
+function io_opt() {
+	global $argv;
+	$args = $argv;
+	array_shift($args);
+	$opt = [];
+	foreach ($args as $v) {
+		$kv = explode('=', $v);
+		if (count($kv) === 2) {
+			list($name, $value) = $kv;
+			$value = trim($value);
+		} else {
+			$name = $v;
+			$value = true;
+		}
+		
+		$name = ltrim(trim($name), '-');
+		$opt[$name] = $value;
+	}
+	
+	return $opt;
+}
+
+/**
  * Заменить вхождения строки '{varName}' на соответствующее значение из массива
  * @param string $template
  * @param array $vars
@@ -257,4 +331,45 @@ function DEBUG() {
 	echo $backtrace[0]['file'].':'.$backtrace[0]['line']."\n";
 	$vars = func_get_args();
 	call_user_func_array('var_dump', $vars);
+}
+
+/**
+ * Выполнить запрос с помощью CURL
+ * @param string $method
+ * @param string $url
+ * @param array $headers
+ * @param string $body
+ * @throws \Exception
+ */
+function http_curl_request($method, $url, array $headers, $body) {
+	$curl = curl_init($url);
+	curl_setopt_array($curl, [
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HEADER => true,
+		CURLOPT_CUSTOMREQUEST => $method,
+		CURLOPT_HTTPHEADER => $headers,
+		CURLOPT_POSTFIELDS  => $body,
+		CURLOPT_SSL_VERIFYHOST => false,
+		CURLOPT_SSL_VERIFYPEER => false,
+	]);
+	$result = curl_exec($curl);
+
+	if ($result === false) {
+		$error = curl_error($curl);
+		curl_close($curl);
+		throw new \Exception($error);
+	}
+
+	$headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+	$responseHeaders = substr($result, 0, $headerSize);
+	$headers = array_filter(explode("\r\n", $responseHeaders));
+	$responseBody = substr($result, $headerSize);
+	$response = [
+		'code' => curl_getinfo($curl, CURLINFO_HTTP_CODE),
+		'headers' => $headers,
+		'body' => $responseBody,
+	];
+	curl_close($curl);
+
+	return $response;
 }

@@ -140,3 +140,30 @@ function io_post($key, $defaultValue = null) {
 function io_session($key, $defaultValue = null) {
 	return array_key_exists($key, $_SESSION)? $_SESSION[$key] : $defaultValue;
 }
+
+/**
+ * Получить опции командной строки
+ * @global array $argv
+ * @return array
+ */
+function io_opt() {
+	global $argv;
+	$args = $argv;
+	array_shift($args);
+	$opt = [];
+	foreach ($args as $v) {
+		$kv = explode('=', $v);
+		if (count($kv) === 2) {
+			list($name, $value) = $kv;
+			$value = trim($value);
+		} else {
+			$name = $v;
+			$value = true;
+		}
+		
+		$name = ltrim(trim($name), '-');
+		$opt[$name] = $value;
+	}
+	
+	return $opt;
+}
