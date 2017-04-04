@@ -78,3 +78,20 @@ function arr_pick($array, $keys) {
 function arr_omit($array, $keys) {
 	return array_diff_key($array, array_flip($keys));
 }
+
+/**
+ * Проиндексировать список массивов по ключу
+ * @param array $array массив ассосиативных массивов
+ * @param string $key
+ * @return array
+ */
+function arr_index($array, $key) {
+	$index = [];
+	foreach ($array as $v) {
+		if (array_key_exists($key, $v)) {
+			$index[$v[$key]] = $v;
+		}
+	}
+	
+	return $index;
+}
