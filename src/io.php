@@ -143,13 +143,17 @@ function io_session($key, $defaultValue = null) {
 
 /**
  * Получить опции командной строки
+ * @param array $args аргументы командной строки. Если не переданы, используется $argv.
  * @global array $argv
  * @return array
  */
-function io_opt() {
-	global $argv;
-	$args = $argv;
-	array_shift($args);
+function io_opt($args = null) {
+	if ($args === null) {
+		global $argv;
+		$args = $argv;
+		array_shift($args);
+	}
+
 	$opt = [];
 	foreach ($args as $v) {
 		$kv = explode('=', $v);

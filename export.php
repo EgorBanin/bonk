@@ -11,12 +11,20 @@ if ($ns) {
     $out = "<?php\n\n";
 }
 
+$out .= '
+/**
+ * Набор полезных PHP-функций
+ * @link https://github.com/EgorBanin/wub
+ */
+';
+
 $files = [
 	__DIR__.'/src/arr.php',
 	__DIR__.'/src/io.php',
 	__DIR__.'/src/str.php',
 	__DIR__.'/src/wub.php',
 	__DIR__.'/src/http.php',
+	__DIR__.'/src/file.php',
 ];
 foreach ($files as $file) {
 	$content = file_get_contents($file);
