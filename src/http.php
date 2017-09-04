@@ -3,42 +3,45 @@
 namespace wub;
 
 /**
- * Выполнить запрос с помощью CURL
+ * Выполнить HTTP-запрос
+ * Для работы функции необходима включённая директива allow_url_fopen.
  * @param string $method
  * @param string $url
- * @param array $headers
+ * @param array $headers массив строк-заголовков
  * @param string $body
+ * @param array $options опции контекста
  * @throws \Exception
  */
-function http_curl_request($method, $url, array $headers, $body) {
-	$curl = curl_init($url);
-	curl_setopt_array($curl, [
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HEADER => true,
-		CURLOPT_CUSTOMREQUEST => $method,
-		CURLOPT_HTTPHEADER => $headers,
-		CURLOPT_POSTFIELDS  => $body,
-		CURLOPT_SSL_VERIFYHOST => false,
-		CURLOPT_SSL_VERIFYPEER => false,
-	]);
-	$result = curl_exec($curl);
-
-	if ($result === false) {
-		$error = curl_error($curl);
-		curl_close($curl);
-		throw new \Exception($error);
+function http_request($method, $url, array $headers, $body, array $options = []) {
+	$options['http'] = [
+		'method' => $method,
+		'header' => $headers,
+		'content' => $body,
+		'max_redirects' => 0,
+		'ignore_errors' => 1,
+	];
+	$context = stream_context_create($options);
+	$stream = @fopen($url, 'r', false, $context);
+	if ($stream === false) {
+		throw new \Exception('Не удалось выполнить запрос '.$method.' '.$url);
 	}
-
-	$headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-	$responseHeaders = substr($result, 0, $headerSize);
-	$headers = array_filter(explode("\r\n", $responseHeaders));
-	$responseBody = substr($result, $headerSize);
-	$response = [
-		'code' => curl_getinfo($curl, CURLINFO_HTTP_CODE),
-		'headers' => $headers,
+	$meta = stream_get_meta_data($stream);
+	$responseHeaders = isset($meta['wrapper_data'])? $meta['wrapper_data'] : [];
+	$responseBody = stream_get_contents($stream);
+	fclose($stream);
+	$responseStatus = [];
+	if (preg_match(
+		'/^(?<protocol>https?\/[0-9\.]+)\s+(?<code>\d+)\s+(?<comment>\S.*)$/i',
+		reset($responseHeaders),
+		$responseStatus
+	) !== 1) {
+		throw new \Exception('Не удалось распарсить статус ответа');
+	}
+	
+	return [
+		'code' => $responseStatus['code'],
+		'headers' => $responseHeaders,
 		'body' => $responseBody,
 	];
-	curl_close($curl);
-
-	return $response;
 }
+
