@@ -17,6 +17,13 @@ function io_get_request() {
 		return $current;
 	}
 
+	if (isset($_SERVER['SERVER_PROTOCOL'])) {
+		$protocol = $_SERVER['SERVER_PROTOCOL'];
+	} else {
+		trigger_error('Can\'t find server protocol', \E_USER_WARNING);
+		$protocol = 'UNKNOWN';
+	}
+
 	if (isset($_SERVER['REQUEST_METHOD'])) {
 		$method = $_SERVER['REQUEST_METHOD'];
 	} else {
@@ -41,6 +48,7 @@ function io_get_request() {
 	$body = file_get_contents('php://input');
 
 	return [
+		'protocol' => $protocol,
 		'method' => $method,
 		'url' => $url,
 		'headers' => $headers,

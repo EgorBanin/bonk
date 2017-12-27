@@ -95,3 +95,35 @@ function arr_index($array, $key) {
 	
 	return $index;
 }
+
+
+/**
+ * Получить комбинации значений массивов
+ * @param array $arr1,... массивы, значения которых комбинируются
+ */
+function arr_comb(...$arrs) {
+	$size = count($arrs);
+	if ($size === 2) {
+		list($a, $b) = $arrs;
+		$combs = [];
+		foreach ($a as $aVal) {
+			foreach ($b as $bVal) {
+				$combs[] = [$aVal, $bVal];
+			}
+		}
+
+		return $combs;
+	} elseif ($size > 2) {
+		$last = array_pop($arrs);
+		$combs = arr_comb(arr_comb(...$arrs), $last);
+
+		return array_map(function($comb) {
+			$flat = array_values($comb[0]); // разворачиваем только первый
+			$flat[] = $comb[1];
+
+			return $flat;
+		}, $combs);
+	} else {
+		return $arrs;
+	}
+}
