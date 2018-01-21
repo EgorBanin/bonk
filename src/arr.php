@@ -100,6 +100,7 @@ function arr_index($array, $key) {
 /**
  * Получить комбинации значений массивов
  * @param array $arr1,... массивы, значения которых комбинируются
+ * @return array
  */
 function arr_comb(...$arrs) {
 	$size = count($arrs);

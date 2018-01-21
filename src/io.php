@@ -48,11 +48,16 @@ function io_get_request() {
 	$body = file_get_contents('php://input');
 
 	return [
+		0 => $protocol,
 		'protocol' => $protocol,
+		1 => $method,
 		'method' => $method,
+		2 => $url,
 		'url' => $url,
+		3 => $headers,
 		'headers' => $headers,
-		'body' => $body
+		4 => $body,
+		'body' => $body,
 	];
 }
 
@@ -107,46 +112,6 @@ function io_send_response($code, $headers, $body) {
 
 		return true;
 	}
-}
-
-/**
- * Отправить ответ редиректа и завершить выполнение
- * @param string $url
- * @param int $code
- */
-function io_redirect($url, $code = 302) {
-	io_send_response($code, ['Location: '.$url], '');
-	exit(0);
-}
-
-/**
- * Получить переменную из $_GET массива
- * @param string $key
- * @param mixed $defaultValue
- * @return mixed
- */
-function io_get($key, $defaultValue = null) {
-	return array_key_exists($key, $_GET)? $_GET[$key] : $defaultValue;
-}
-
-/**
- * Получить переменную из $_POST массива
- * @param string $key
- * @param mixed $defaultValue
- * @return mixed
- */
-function io_post($key, $defaultValue = null) {
-	return array_key_exists($key, $_POST)? $_POST[$key] : $defaultValue;
-}
-
-/**
- * Получить переменную из $_SESSION массива
- * @param string $key
- * @param mixed $defaultValue
- * @return mixed
- */
-function io_session($key, $defaultValue = null) {
-	return array_key_exists($key, $_SESSION)? $_SESSION[$key] : $defaultValue;
 }
 
 /**
