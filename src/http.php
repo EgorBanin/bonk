@@ -13,7 +13,7 @@ namespace wub;
  * @throws \Exception
  */
 function http_request($method, $url, array $headers, $body, array $options = []) {
-	$options['http'] = [
+	$options['http'] = ($options['http']?? []) + [
 		'method' => $method,
 		'header' => $headers,
 		'content' => $body,
@@ -21,26 +21,34 @@ function http_request($method, $url, array $headers, $body, array $options = [])
 		'ignore_errors' => 1,
 	];
 	$context = stream_context_create($options);
-	$stream = @fopen($url, 'r', false, $context);
-	if ($stream === false) {
-		throw new \Exception('Не удалось выполнить запрос '.$method.' '.$url);
-	}
+	set_error_handler(function($code, $message, $file, $line) use($method, $url) {
+		restore_error_handler();
+		throw new \Exception(
+			'Не удалось выполнить запрос ' . $method . ' ' . $url,
+			1,
+			new \ErrorException($message, $code, $code, $file, $line)
+		);
+	});
+	$stream = fopen($url, 'r', false, $context);
 	$meta = stream_get_meta_data($stream);
 	$responseHeaders = isset($meta['wrapper_data'])? $meta['wrapper_data'] : [];
 	$responseBody = stream_get_contents($stream);
 	fclose($stream);
 	$responseStatus = [];
 	if (preg_match(
-		'/^(?<protocol>https?\/[0-9\.]+)\s+(?<code>\d+)\s+(?<comment>\S.*)$/i',
-		reset($responseHeaders),
+		'/^(?<protocol>https?\/[0-9\.]+)\s+(?<code>\d+)(?:\s+(?<comment>\S.*))?$/i',
+		trim(reset($responseHeaders)),
 		$responseStatus
 	) !== 1) {
 		throw new \Exception('Не удалось распарсить статус ответа');
 	}
 	
 	return [
+		0 => $responseStatus['code'],
 		'code' => $responseStatus['code'],
+		1 => $responseHeaders,
 		'headers' => $responseHeaders,
+		2 => $responseBody,
 		'body' => $responseBody,
 	];
 }
