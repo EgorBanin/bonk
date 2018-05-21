@@ -30,6 +30,7 @@ function http_request($method, $url, array $headers, $body, array $options = [])
 		);
 	});
 	$stream = fopen($url, 'r', false, $context);
+	restore_error_handler();
 	$meta = stream_get_meta_data($stream);
 	$responseHeaders = isset($meta['wrapper_data'])? $meta['wrapper_data'] : [];
 	$responseBody = stream_get_contents($stream);
