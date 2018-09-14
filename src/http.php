@@ -43,7 +43,7 @@ function http_request($method, $url, array $headers, $body, array $options = [])
 	) !== 1) {
 		throw new \Exception('Не удалось распарсить статус ответа');
 	}
-	
+
 	return [
 		0 => $responseStatus['code'],
 		'code' => $responseStatus['code'],
@@ -129,7 +129,7 @@ class MultipartFormData {
 		do {
 			--$tryLimit;
 			$boundary = bin2hex(random_bytes(10));
-			foreach ($this->params as &$param) {
+			foreach ($this->params as $param) {
 				if (strpos($param['value'], $boundary) !== false) {
 					$boundary = null;
 					break;

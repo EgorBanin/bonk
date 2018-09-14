@@ -4,11 +4,11 @@ namespace wub;
 
 /**
  * Получить текущий запрос
- * Заголовки получаются с помощью io_get_request_headers.
+ *
  * Имена заголовков приводятся к виду Имя-Заголовка. Будте внимательны,
  * при использовании CamelCase или аббривиатур, буквы в верхнем регистре
  * в середине слова будут приведены к нижнему.
- * @return array {method, url, headers, body}
+ * @return array {protocol, method, url, headers, body}
  */
 function io_get_request() {
 	static $current = null;
@@ -35,15 +35,18 @@ function io_get_request() {
 		$url = $_SERVER['REQUEST_URI'];
 	} else {
 		trigger_error('Can\'t find request uri', \E_USER_WARNING);
-		$url = '/';
+		$url = '';
 	}
 
-	$headers = io_get_request_headers();
-
-	if ($headers === false) {
-		trigger_error('Can\'t find request headers', \E_USER_WARNING);
-		$headers = [];
-	}
+	$headers = [];
+	foreach ($_SERVER as $key => $value) {
+		if (strpos($key, 'HTTP_') === 0) {
+			$name = implode('-', array_map(function($v) {
+				return ucfirst(strtolower($v));
+			}, explode('_', substr($key, 5))));
+			$headers[$name] = $value;
+		}
+	};
 
 	$body = file_get_contents('php://input');
 
@@ -59,27 +62,6 @@ function io_get_request() {
 		4 => $body,
 		'body' => $body,
 	];
-}
-
-/**
- * Получить заголовки текущего запроса
- * Имена заголовков приводятся к виду Имя-Заголовка. Будте внимательны,
- * при использовании CamelCase или аббривиатур, буквы в верхнем регистре
- * в середине слова будут приведены к нижнему.
- * @return array
- */
-function io_get_request_headers() {
-	$headers = [];
-	foreach ($_SERVER as $key => $value) {
-		if (strpos($key, 'HTTP_') === 0) {
-			$name = implode('-', array_map(function($v) {
-				return ucfirst(strtolower($v));
-			}, explode('_', substr($key, 5))));
-			$headers[$name] = $value;
-		}
-	}
-
-	return $headers;    
 }
 
 /**
@@ -112,35 +94,4 @@ function io_send_response($code, $headers, $body) {
 
 		return true;
 	}
-}
-
-/**
- * Получить опции командной строки
- * @param array $args аргументы командной строки. Если не переданы, используется $argv.
- * @global array $argv
- * @return array
- */
-function io_opt($args = null) {
-	if ($args === null) {
-		global $argv;
-		$args = $argv;
-		array_shift($args);
-	}
-
-	$opt = [];
-	foreach ($args as $v) {
-		$kv = explode('=', $v);
-		if (count($kv) === 2) {
-			list($name, $value) = $kv;
-			$value = trim($value);
-		} else {
-			$name = $v;
-			$value = true;
-		}
-		
-		$name = ltrim(trim($name), '-');
-		$opt[$name] = $value;
-	}
-	
-	return $opt;
 }

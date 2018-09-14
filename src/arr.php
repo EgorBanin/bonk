@@ -3,17 +3,6 @@
 namespace wub;
 
 /**
- * Получить значение из массива по ключу
- * @param array $array
- * @param mixed $key
- * @param mixed $defaultValue
- * @return mixed
- */
-function arr_get($array, $key, $defaultValue = null) {
-	return array_key_exists($key, $array)? $array[$key] : $defaultValue;
-}
-
-/**
  * Извлечь значение из массива по ключу
  * @param array $array
  * @param mixed $key
@@ -23,7 +12,7 @@ function arr_get($array, $key, $defaultValue = null) {
 function arr_take(&$array, $key, $defaultValue = null) {
 	$val = arr_get($array, $key, $defaultValue);
 	unset($array[$key]);
-	
+
 	return $val;
 }
 
@@ -41,7 +30,7 @@ function arr_usearch($array, $func) {
 			break;
 		}
 	}
-	
+
 	return $result;
 }
 
@@ -92,7 +81,7 @@ function arr_index($array, $key) {
 			$index[$v[$key]] = $v;
 		}
 	}
-	
+
 	return $index;
 }
 

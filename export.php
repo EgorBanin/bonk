@@ -13,7 +13,7 @@ if ($ns) {
 
 $out .= '
 /**
- * Набор полезных PHP-функций
+ * Набор полезных функций
  * @link https://github.com/EgorBanin/wub
  */
 ';
@@ -25,6 +25,7 @@ $files = [
 	__DIR__.'/src/wub.php',
 	__DIR__.'/src/http.php',
 	__DIR__.'/src/file.php',
+	__DIR__.'/src/obj.php',
 ];
 foreach ($files as $file) {
 	$content = file_get_contents($file);
