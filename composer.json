@@ -1,5 +1,15 @@
 {
+	"name": "eb/wub",
 	"require-dev": {
 		"phpunit/phpunit": "~5"
+	},
+	"require": {
+		"php": "7.4.*",
+		"eb/func_all": "^1.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"wub\\": "src/"
+		}
 	}
 }
