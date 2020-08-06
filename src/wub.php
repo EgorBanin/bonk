@@ -1,17 +1,13 @@
-<?php
-
-namespace wub;
+<?php declare(strict_types=1);
 
 /**
- * Подключение файла с буферизацией вывода
- * @param string $file
- * @param array $params
- * @return string
+ * Beyond Lies the Wub
+ * @param callable $func
+ * @return Closure
  */
-function ob_include($file, array $params = []) {
-	extract($params);
-	ob_start();
-	require func_get_arg(0);
-
-	return ob_get_clean();
+function wub(callable $func): Closure {
+	return function(...$args) use($func) {
+		return function_exists('captainFranco')?
+			captainFranco($func, $args) : new \wub\ValueBuilder($func, $args);
+	};
 }
