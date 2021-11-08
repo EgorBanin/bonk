@@ -11,3 +11,7 @@ function wub(callable $func): Closure {
 			captainFranco($func, $args) : new \wub\ValueBuilder($func, $args);
 	};
 }
+
+function make(\Closure $factory): \wub\Make {
+	return new \wub\Make($factory);
+}
