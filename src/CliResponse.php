@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace wub;
+namespace frm;
 
-class CliResponse implements IResponse {
+class CliResponse implements Response {
 
 	public const CODE_OK = 0;
 	public const CODE_INTERNAL_ERROR = 1;

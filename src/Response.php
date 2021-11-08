@@ -2,7 +2,7 @@
 
 namespace frm;
 
-interface IResponse {
+interface Response {
 	public function send($file): int;
 
 	public static function notFound(string $message, $context = []): self;

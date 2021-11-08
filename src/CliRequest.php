@@ -1,17 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace wub;
+namespace frm;
 
-class CliRequest implements IRequest {
+class CliRequest implements Request {
 
-	private array $argv;
-	private string $input;
 	private array $appParams = [];
 
-	public function __construct(array $argv, string $input) {
-		$this->argv = $argv;
-		$this->input = $input;
-	}
+	public function __construct(
+		private array $argv,
+		private string $input,
+	) {}
 
 	public function getLocator(): string {
 		return \implode(' ', $this->argv);

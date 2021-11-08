@@ -2,7 +2,7 @@
 
 namespace frm;
 
-interface IRequest {
+interface Request {
 
 	public function getLocator(): string;
 

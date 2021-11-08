@@ -1,49 +1,28 @@
 <?php declare(strict_types=1);
 
-namespace wub;
+namespace frm;
 
-/**
- * Приложение
- * Неинтерактивное приложение, обработчик запроса.
- */
+// App -- неинтерактивное приложение, обработчик запросов
 class App {
-
-	private IRouter $router;
-
-	private IRegistry $registry;
-
 	public function __construct(
-		IRouter $router,
-		IRegistry $registry
-	) {
-		$this->router = $router;
-		$this->registry = $registry;
-	}
+		private Router $router,
+		private Registry $registry,
+	) {}
 
-	/**
-	 * Запуск приложения
-	 * Обработка запроса и вывод ответа.
-	 * @param IRequest $rq
-	 * @param IResponse $rs
-	 * @param false|resource $out
-	 * @param false|resource $err
-	 * @return int
-	 * @throws \Exception
-	 */
-	public function run(IRequest $rq, IResponse $rs, $out = \STDOUT, $err = \STDERR) {
+	// run -- обработка запроса и вывод ответа
+	public function run(Request $rq, Response $rs, $out, $err) {
 		$route = $this->router->route($rq->getLocator());
 		if ($route === null) {
-			return $rs->notFound('Не найдено')->send($err);
+			return $rs->notFound('Not found')->send($err);
 		}
 
 		try {
-			$handler = $this->registry->get($route->getHandlerId());
+			$handler = $this->registry->get($route->handlerId);
 		} catch(\Exception $e) { // todo
 			throw $e;
-			return $rs->notFound('Не найдено')->send($err);
 		}
 
-		$rq->addAppParams($route->getParams());
+		$rq->addAppParams($route->params);
 
 		try {
 			$rs = $handler($rq, $rs);

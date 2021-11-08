@@ -1,44 +1,23 @@
 <?php declare(strict_types=1);
 
-namespace wub;
+namespace frm;
 
-class HttpRequest implements IRequest {
+class HttpRequest implements Request {
 
-	private ?string $protocol;
-	private ?string $method;
-	private ?string $url;
-	private array $headers;
-	private string $body;
-	private array $queryParams;
-	private array $bodyParams;
-	private array $files;
-	private array $cookies;
-	private ?string $ip;
 	private array $appParams = [];
 
 	public function __construct(
-		?string $protocol,
-		?string $method,
-		?string $url,
-		array $headers,
-		string $body,
-		array $queryParams,
-		array $bodyParams,
-		array $files,
-		array $cookies,
-		?string $ip
-	) {
-		$this->protocol = $protocol;
-		$this->method = $method;
-		$this->url = $url;
-		$this->headers = $headers;
-		$this->body = $body;
-		$this->queryParams = $queryParams;
-		$this->bodyParams = $bodyParams;
-		$this->files = $files;
-		$this->cookies = $cookies;
-		$this->ip = $ip;
-	}
+		private ?string $protocol,
+		private ?string $method,
+		private ?string $url,
+		private array $headers,
+		private string $body,
+		private array $queryParams,
+		private array $bodyParams,
+		private array $files,
+		private array $cookies,
+		private ?string $ip,
+	) {}
 
 	public static function fromGlobals(
 		array $server,
@@ -51,7 +30,7 @@ class HttpRequest implements IRequest {
 		$method = $server['REQUEST_METHOD'] ?? null;
 		$body = file_get_contents($phpinput);
 		$bodyParams = $post;
-		if ($method !== 'POST' && empty($post)) { // fixme
+		if ($method !== 'POST' && empty($post)) { // todo: исправить
 			parse_str($body, $bodyParams);
 		}
 		return new self(
@@ -97,11 +76,10 @@ class HttpRequest implements IRequest {
 		return $headers;
 	}
 
-    public function getLocator(): string
-    {
+    public function getLocator(): string {
         return sprintf(
             '%s %s',
-            strtolower($this->method),
+            $this->method,
             parse_url($this->url, PHP_URL_PATH)
         );
     }

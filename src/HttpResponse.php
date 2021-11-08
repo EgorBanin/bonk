@@ -1,24 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace wub;
+namespace frm;
 
-class HttpResponse implements IResponse {
+class HttpResponse implements Response {
 
-	private int $code;
-
-	private array $headers;
-
-	private string $body;
-
-	public function __construct(int $code, array $headers, string $body) {
-		$this->code = $code;
-		$this->headers = $headers;
-		$this->body = $body;
-	}
+	public function __construct(
+		private int $code,
+		private array $headers,
+		private string $body,
+	) {}
 
 	public function send($file): int {
 		if (\headers_sent()) {
-			throw new \Exception('Ошибка при отправке ответа: заголовки уже отправлены');
+			throw new Err('headers already sent');
 		}
 
 		\http_response_code($this->code);
