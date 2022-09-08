@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace frm;
+namespace bonk;
 
 return function() {
 	static $config;

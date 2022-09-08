@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace frm;
+namespace bonk;
 
-return make(fn(
+return _(fn(
 	\PDO $pdo,
 ) => function(CliRequest $rq, CliResponse $rs) use($pdo) {
 	$pdo->query('

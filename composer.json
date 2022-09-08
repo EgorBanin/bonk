@@ -1,14 +1,14 @@
 {
-	"name": "eb/wub",
+	"name": "eb/bonk",
 	"require": {
 		"php": "^8.0"
 	},
 	"autoload": {
 		"psr-4": {
-			"frm\\": "src/"
+			"bonk\\": "bonk/"
 		},
 		"files": [
-			"src/functions.php"
+          "bonk/functions.php"
 		]
 	},
 	"require-dev": {

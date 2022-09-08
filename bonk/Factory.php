@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace frm;
+namespace bonk;
 
-// Factory -- фабрика значений, получающая аргументы-зависимости из реестра
+/**
+ * Фабрика зависимостей, получающая аргументы-зависимости из реестра
+ */
 class Factory {
 
 	public function __construct(

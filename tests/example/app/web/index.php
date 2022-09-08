@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace frm;
+namespace bonk;
 
-return make(fn(
+return _(fn(
 	\example\articles\Service $articles,
 ) => function(HttpRequest $rq, HttpResponse $rs) use($articles) {
 	$page = new \example\articles\TopPage();

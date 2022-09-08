@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace frm;
+namespace bonk;
 
-return make(function(\PDO $pdo) {
+return _(function(\PDO $pdo) {
 	static $repo;
 	if ( ! $repo) {
 		$repo = new \example\articles\Repo($pdo);

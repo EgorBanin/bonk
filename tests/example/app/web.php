@@ -1,14 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace frm;
+namespace bonk;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
 $router = new Router([
-	'~GET /~' => 'handlers/index.php',
+	'~^GET /$~' => 'web/index.php',
+    '~^GET /hello$~' => 'web/helloWorld.php',
 ]);
 $registry = new Registry([
-	'handlers/' => __DIR__ . '/handlers',
+	'web/' => __DIR__ . '/web',
 	'' => __DIR__ . '/factories',
 ]);
 $app = new App($router, $registry);
