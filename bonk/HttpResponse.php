@@ -1,24 +1,21 @@
 <?php declare(strict_types=1);
 
-namespace wub;
+namespace bonk;
 
-class HttpResponse implements IResponse {
+class HttpResponse implements Response {
 
-	private int $code;
+	public function __construct(
+		private int $code,
+		private array $headers,
+		private string $body,
+	) {}
 
-	private array $headers;
-
-	private string $body;
-
-	public function __construct(int $code, array $headers, string $body) {
-		$this->code = $code;
-		$this->headers = $headers;
-		$this->body = $body;
-	}
-
-	public function send($file): int {
+    /**
+     * @inheritDoc
+     */
+	public function send($file) {
 		if (\headers_sent()) {
-			throw new \Exception('Ошибка при отправке ответа: заголовки уже отправлены');
+			throw Exception::system('headers already sent');
 		}
 
 		\http_response_code($this->code);
@@ -31,10 +28,18 @@ class HttpResponse implements IResponse {
 			\header($header, true);
 		}
 		
-		\fwrite($file, $this->body);
+		$r = \fwrite($file, $this->body);
+        if ($r === false) {
+            throw Exception::system("can't send response");
+        }
 
-		return 0;
+        return 0;
 	}
+
+    public function setOutput(string $output): self
+    {
+        return $this->setBody($output);
+    }
 
 	public static function notFound(string $message, $context = []): self {
 		return new self(404, [], $message);
