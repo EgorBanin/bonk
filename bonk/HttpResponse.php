@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
+namespace frm;
 
 class HttpResponse implements Response {
 
@@ -10,9 +10,9 @@ class HttpResponse implements Response {
 		private string $body,
 	) {}
 
-    /**
-     * @inheritDoc
-     */
+	/**
+	 * @inheritDoc
+	 */
 	public function send($file) {
 		if (\headers_sent()) {
 			throw Exception::system('headers already sent');
@@ -29,17 +29,17 @@ class HttpResponse implements Response {
 		}
 		
 		$r = \fwrite($file, $this->body);
-        if ($r === false) {
-            throw Exception::system("can't send response");
-        }
+		if ($r === false) {
+			throw Exception::system("can't send response");
+		}
 
-        return 0;
+		return 0;
 	}
 
-    public function setOutput(string $output): self
-    {
-        return $this->setBody($output);
-    }
+	public function setOutput(string $output): self
+	{
+		return $this->setBody($output);
+	}
 
 	public static function notFound(string $message, $context = []): self {
 		return new self(404, [], $message);
@@ -53,10 +53,10 @@ class HttpResponse implements Response {
 		return new self(200, [], '');
 	}
 
-    public function setBody(string $body): self {
-        $this->body = $body;
+	public function setBody(string $body): self {
+		$this->body = $body;
 
-        return $this;
-    }
+		return $this;
+	}
 
 }

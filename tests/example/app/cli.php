@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
+namespace frm;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
 $router = new Router([
-	'~initDb~' => 'cli/initDb.php', // todo {command}
+	'~^(?<cmd>.+)$~' => 'cli/{cmd}.php',
 ]);
 $registry = new Registry([
 	'cli/' => __DIR__ . '/cli',
-	'' => __DIR__ . '/factories',
+	'' => __DIR__ . '/services',
 ]);
 $app = new App($router, $registry);
 \array_shift($argv);

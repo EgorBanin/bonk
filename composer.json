@@ -5,10 +5,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"bonk\\": "bonk/"
+			"frm\\": "bonk/"
 		},
 		"files": [
-          "bonk/functions.php"
+			"bonk/functions.php"
 		]
 	},
 	"require-dev": {

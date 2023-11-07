@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
+namespace frm;
 
-return _(function(\example\Config $config) {
+return factory(function(\example\Config $config) {
 	static $pdo;
 	if ( ! $pdo) {
 		$pdo = new \PDO('sqlite:' . $config->get('db.sqlite.fileName', ''));

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
+namespace frm;
 
-return _(function(\example\articles\Repo $repo) {
+return factory(function(\example\articles\Repo $repo) {
 	return new \example\articles\Service($repo);
 })->with(repo: 'articles/repo.php');

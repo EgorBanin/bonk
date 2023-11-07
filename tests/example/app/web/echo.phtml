@@ -1,0 +1,9 @@
+<h1>Request <?= htmlspecialchars($locator) ?>
+<h2>Headers</h2>
+<ul>
+	<?php foreach($headers as $k => $v): ?>
+		<li><?= htmlspecialchars($k) ?>: <?= htmlspecialchars($v) ?></li>
+	<?php endforeach ?>
+</ul>
+<h2>Body</h2>
+<?= htmlspecialchars($body) ?>

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
+namespace frm;
 
-return function() {
+return (function() {
 	static $config;
 	if ( ! $config) {
 		$config = new \example\Config([
@@ -15,4 +15,4 @@ return function() {
 	}
 
 	return $config;
-};
+})();

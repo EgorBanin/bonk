@@ -1,5 +1,3 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
-
-return fn() => 'Hello world!';
+return 'Hello world'; // you can return string

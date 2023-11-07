@@ -1,34 +1,36 @@
 <?php declare(strict_types=1);
 
-namespace bonk;
+namespace frm;
 
 /**
  * Реестр зависимостей
+ * Реестр ищет фабрики значений в указанных директориях и выполняет их,
+ * передавая себя как аргумент для получения арусментов-зависимостей.
  */
 class Registry {
 	private array $dirs;
 
-    /**
-     * @param array $dirs
-     * @throws Exception
-     */
+	/**
+	 * @param array $dirs
+	 * @throws Exception
+	 */
 	public function __construct(array $dirs) {
 		foreach ($dirs as $ns => $dir) {
 			$rDir = realpath($dir);
 			if ( ! $rDir) {
-                throw Exception::system("$dir not found");
+				throw Exception::system("$dir not found");
 			}
 			$this->dirs[$ns] = $rDir;
 		}
 	}
 
-    /**
-     * Получение зависимости
-     *
-     * @param string $id
-     * @return mixed
-     * @throws Exception
-     */
+	/**
+	 * Получение зависимости
+	 *
+	 * @param string $id
+	 * @return mixed
+	 * @throws Exception
+	 */
 	public function get(string $id) {
 		$factory = null;
 		foreach ($this->dirs as $ns => $baseDir) {
@@ -36,11 +38,11 @@ class Registry {
 				continue;
 			}
 
-            try {
-                $factory = self::loadFactory(substr($id, strlen($ns)), $baseDir);
-            } catch (Exception $e) {
-                throw Exception::system("can't load factory $id: $e");
-            }
+			try {
+				$factory = self::loadFactory(substr($id, strlen($ns)), $baseDir);
+			} catch (Exception $e) {
+				throw Exception::system("can't load factory $id: " . $e->getMessage(), $e);
+			}
 			break;
 		}
 
@@ -48,17 +50,21 @@ class Registry {
 			throw Exception::system("factory not found for $id");
 		}
 
+		if ( ! ($factory instanceof Factory)) {
+			$factory = new Factory(fn() => $factory, null);
+		}
+
 		return $factory($this);
 	}
 
-    /**
-     * Загрузка фабрики (return require $file) из директории
-     *
-     * @param string $file
-     * @param string $dir
-     * @return mixed
-     * @throws Exception
-     */
+	/**
+	 * Загрузка фабрики (return require $file) из директории
+	 *
+	 * @param string $file
+	 * @param string $dir
+	 * @return mixed
+	 * @throws Exception
+	 */
 	private static function loadFactory(string $file, string $dir) {
 		$path = realpath($dir . '/' . $file);
 		if ( ! $path) {
