@@ -8,7 +8,10 @@ namespace frm;
  * передавая себя как аргумент для получения арусментов-зависимостей.
  */
 class Registry {
+
 	private array $dirs;
+
+	private array $factories;
 
 	/**
 	 * @param array $dirs
@@ -22,6 +25,8 @@ class Registry {
 			}
 			$this->dirs[$ns] = $rDir;
 		}
+
+		$this->factories = [];
 	}
 
 	/**
@@ -32,26 +37,31 @@ class Registry {
 	 * @throws Exception
 	 */
 	public function get(string $id) {
-		$factory = null;
-		foreach ($this->dirs as $ns => $baseDir) {
-			if ( ! str_starts_with($id, $ns)) {
-				continue;
+		$factory = $this->factories[$id]?? null;
+
+		if ($factory === null) {
+			foreach ($this->dirs as $ns => $baseDir) {
+				if ( ! str_starts_with($id, $ns)) {
+					continue;
+				}
+
+				try {
+					$factory = self::loadFactory(substr($id, strlen($ns)), $baseDir);
+				} catch (Exception $e) {
+					throw Exception::system("can't load factory $id: " . $e->getMessage(), $e);
+				}
+				break;
 			}
 
-			try {
-				$factory = self::loadFactory(substr($id, strlen($ns)), $baseDir);
-			} catch (Exception $e) {
-				throw Exception::system("can't load factory $id: " . $e->getMessage(), $e);
+			if ( ! $factory) {
+				throw Exception::system("factory not found for $id");
 			}
-			break;
-		}
 
-		if ( ! $factory) {
-			throw Exception::system("factory not found for $id");
-		}
+			if ( ! ($factory instanceof Factory)) {
+				$factory = new Factory(fn() => $factory, null);
+			}
 
-		if ( ! ($factory instanceof Factory)) {
-			$factory = new Factory(fn() => $factory, null);
+			$this->factories[$id] = $factory;
 		}
 
 		return $factory($this);
